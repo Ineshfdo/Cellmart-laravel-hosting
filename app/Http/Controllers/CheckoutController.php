@@ -37,7 +37,7 @@ class CheckoutController extends Controller
         }
 
         $user = Auth::user(); // <-- Safe now
-        return view('Pages.checkout.index', compact('cartItems', 'total', 'user'));
+        return view('pages.checkout.index', compact('cartItems', 'total', 'user'));
     }
 
     public function store(Request $request)
@@ -168,6 +168,6 @@ class CheckoutController extends Controller
             }
         }
         
-        return view('Pages.checkout.success', compact('order'));
+        return view('pages.checkout.success', compact('order'));
     }
 }

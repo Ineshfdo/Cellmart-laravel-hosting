@@ -9,6 +9,14 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     /**
+     * Get authenticated user.
+     */
+    public function me(Request $request)
+    {
+        return $request->user();
+    }
+
+    /**
      * DELETE NORMAL USER (ADMIN ONLY)
      */
     public function destroy(Request $request, $id)
