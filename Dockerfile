@@ -34,6 +34,7 @@ FROM php:8.2-fpm-alpine
 RUN apk add --no-cache \
     nginx \
     supervisor \
+    mysql-client \
     libpng \
     libpng-dev \
     libjpeg-turbo \
