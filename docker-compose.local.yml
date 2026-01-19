@@ -1,0 +1,57 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cellmart-app
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+    env_file:
+      - .env
+    volumes:
+      - app-storage:/var/www/html/storage
+      - app-images:/var/www/html/public/images
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - cellmart-network
+
+  db:
+    image: mysql:8.0
+    container_name: cellmart-db
+    restart: unless-stopped
+    ports:
+      - "3310:3306"  # External access on 3310, avoids conflict with local MySQL
+    environment:
+      MYSQL_DATABASE: cellmart
+      MYSQL_USER: cellmart
+      MYSQL_PASSWORD: cellmart_local_password
+      MYSQL_ROOT_PASSWORD: root_local_password
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - cellmart-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_local_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+volumes:
+  db-data:
+    driver: local
+  app-storage:
+    driver: local
+  app-images:
+    driver: local
+
+networks:
+  cellmart-network:
+    driver: bridge
